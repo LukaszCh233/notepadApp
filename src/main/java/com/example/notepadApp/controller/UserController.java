@@ -1,30 +1,34 @@
 package com.example.notepadApp.controller;
 
+import com.example.notepadApp.config.HelpJwt;
 import com.example.notepadApp.entities.User;
 import com.example.notepadApp.service.UserService;
-import com.example.notepadApp.service.serviceImpl.JwtTokenServiceImpl;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/user")
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     private final UserService userService;
-    private final JwtTokenServiceImpl jwtTokenService;
+    private final HelpJwt helpJwt;
     PasswordEncoder passwordEncoder;
 
 
-    public UserController(UserService userService, JwtTokenServiceImpl jwtTokenService, PasswordEncoder passwordEncoder) {
+    public UserController(UserService userService, HelpJwt helpJwt, PasswordEncoder passwordEncoder) {
         this.userService = userService;
-        this.jwtTokenService = jwtTokenService;
+        this.helpJwt = helpJwt;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -52,13 +56,17 @@ public class UserController {
         User storedUser = userService.findUserByEmail(user.getEmail());
         if (passwordEncoder.matches(user.getPassword(), storedUser.getPassword())) {
             logger.info("User logged in successfully: {}", storedUser.getEmail());
-            String jwtToken = jwtTokenService.generateJwtToken(storedUser);
+            String jwtToken = helpJwt.generateToken(storedUser);
 
             return new ResponseEntity<>(jwtToken, HttpStatus.OK);
         } else {
             logger.warn("Incorrect password for user: {}", storedUser.getEmail());
             return new ResponseEntity<>("Incorrect password", HttpStatus.UNAUTHORIZED);
         }
+    }
+    @GetMapping("/users")
+    List<User> users() {
+        return userService.findAllUsers();
     }
 
 }
