@@ -1,10 +1,8 @@
-package com.example.notepadApp.service.serviceImpl;
+package com.example.notepadApp.config;
 
-import com.example.notepadApp.controller.NoteController;
 import com.example.notepadApp.entities.User;
 import com.example.notepadApp.service.UserService;
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import java.security.Key;
 import java.util.Date;
 
 @Service
@@ -22,10 +19,12 @@ public class JwtTokenServiceImpl {
     UserService userService;
     SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     long TOKEN_EXPIRATION_TIME = 3600000;
-@Autowired
+
+    @Autowired
     public JwtTokenServiceImpl(UserService userService) {
         this.userService = userService;
     }
+
     public String generateJwtToken(User user) {
 
         return Jwts.builder()
@@ -36,7 +35,7 @@ public class JwtTokenServiceImpl {
                 .compact();
     }
 
-    public String getUsername(String token){
+    public String getUsername(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
@@ -44,8 +43,9 @@ public class JwtTokenServiceImpl {
                 .getBody();
         return claims.getSubject();
     }
-    public boolean validateToken(String token){
-        try{
+
+    public boolean validateToken(String token) {
+        try {
             Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
@@ -62,5 +62,4 @@ public class JwtTokenServiceImpl {
         }
         return false;
     }
-
 }

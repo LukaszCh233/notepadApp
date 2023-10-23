@@ -16,13 +16,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
     private final HelpJwt helpJwt;
     private final CustomUserDetailsService userDetailsService;
-    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
-@Autowired
+    @Autowired
     public JwtAuthenticationFilter(HelpJwt helpJwt, CustomUserDetailsService userDetailsService) {
         this.helpJwt = helpJwt;
         this.userDetailsService = userDetailsService;
@@ -40,10 +41,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
         jwt = authHeader.substring(7);
-        userEmail = helpJwt.getUserNameFromToken(jwt);
+        userEmail = helpJwt.extractUsername(jwt);
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-            Boolean validateToken = this.helpJwt.validateToken(jwt, userDetails);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
+            boolean validateToken = helpJwt.isTokenValid(jwt, userDetails);
             if (validateToken) {
 
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
@@ -55,9 +56,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 throw new ServletException("Validation faild ");
             }
         }
-            filterChain.doFilter(request, response);
-        }
-
+        filterChain.doFilter(request, response);
     }
+}
 
 

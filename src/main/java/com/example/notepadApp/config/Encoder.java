@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 public class Encoder {
     @Bean
     public PasswordEncoder passwordEncoder() {
-        // Tworzy instancję BCryptPasswordEncoder jako implementację PasswordEncoder
         return new BCryptPasswordEncoder();
     }
 }
