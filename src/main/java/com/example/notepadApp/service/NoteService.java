@@ -10,10 +10,10 @@ import java.util.Optional;
 public interface NoteService  {
     Note createNote(Note note);
     List<Note> getAllNotes();
-    Optional<Note> getNoteById(Long id);
+    Optional<Note> getNoteById(Integer id);
     void deleteAllNotes();
-    void deleteById(Long id);
+    void deleteById(Integer id);
     Note updateNote(Note note);
     boolean existsNoteByTitle(String title);
-    boolean existsNoteById(Long id);
+    boolean existsNoteById(Integer id);
 }

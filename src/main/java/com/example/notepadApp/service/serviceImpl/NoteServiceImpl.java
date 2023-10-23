@@ -3,11 +3,11 @@ package com.example.notepadApp.service.serviceImpl;
 import com.example.notepadApp.entities.Note;
 import com.example.notepadApp.repository.NoteRepository;
 import com.example.notepadApp.service.NoteService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
 @Service
 public class NoteServiceImpl implements NoteService {
     NoteRepository noteRepository;
@@ -21,15 +21,13 @@ public class NoteServiceImpl implements NoteService {
         return noteRepository.save(note);
     }
 
-    @Autowired
-
     @Override
     public List<Note> getAllNotes() {
         return noteRepository.findAll();
     }
 
     @Override
-    public Optional<Note> getNoteById(Long id) {
+    public Optional<Note> getNoteById(Integer id) {
         return noteRepository.findById(id);
     }
 
@@ -39,8 +37,8 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public void deleteById(Long id) {
-    noteRepository.deleteById(id);
+    public void deleteById(Integer id) {
+        noteRepository.deleteById(id);
     }
 
     @Override
@@ -54,7 +52,7 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public boolean existsNoteById(Long id) {
+    public boolean existsNoteById(Integer id) {
         return noteRepository.existsById(id);
     }
 
