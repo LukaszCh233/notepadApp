@@ -3,21 +3,24 @@ package com.example.notepadApp.service.serviceImpl;
 import com.example.notepadApp.entities.Note;
 import com.example.notepadApp.repository.NoteRepository;
 import com.example.notepadApp.service.NoteService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class NoteServiceImpl implements NoteService {
     NoteRepository noteRepository;
-
+    @Autowired
     public NoteServiceImpl(NoteRepository noteRepository) {
         this.noteRepository = noteRepository;
     }
 
     @Override
     public Note createNote(Note note) {
+        note.setDate(LocalDate.now());
         return noteRepository.save(note);
     }
 
@@ -55,6 +58,5 @@ public class NoteServiceImpl implements NoteService {
     public boolean existsNoteById(Integer id) {
         return noteRepository.existsById(id);
     }
-
 
 }

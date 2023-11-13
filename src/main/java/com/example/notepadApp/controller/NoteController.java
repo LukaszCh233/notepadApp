@@ -60,9 +60,12 @@ public class NoteController {
     public ResponseEntity<?> deleteAllNotes() {
         List<Note> allNotes = noteService.getAllNotes();
         if (allNotes.isEmpty()) {
+            logger.warn("Notes list is empty. No notes to delete.");
             return new ResponseEntity<>("Notes list is empty", HttpStatus.NOT_FOUND);
         } else {
             noteService.deleteAllNotes();
+            logger.info("All notes have been deleted.");
+
             return new ResponseEntity<>("All notes have been deleted", HttpStatus.OK);
         }
     }
@@ -71,8 +74,10 @@ public class NoteController {
     public ResponseEntity<?> deleteById(@PathVariable Integer id) {
         if (noteService.existsNoteById(id)) {
             noteService.deleteById(id);
+            logger.info("Note with ID {} has been deleted.", id);
             return new ResponseEntity<>("Note deleted", HttpStatus.OK);
         } else {
+            logger.warn("Note with ID {} does not exist.", id);
             return new ResponseEntity<>("Note not exists", HttpStatus.NOT_FOUND);
         }
     }
@@ -86,11 +91,15 @@ public class NoteController {
                 existingNote.setTitle(note.getTitle());
                 existingNote.setText(note.getText());
                 Note updatedNote = noteService.updateNote(existingNote);
-              return  new ResponseEntity<>(updatedNote, HttpStatus.OK);
+                logger.info("Note with ID {} has been updated.", id);
+                return  new ResponseEntity<>(updatedNote, HttpStatus.OK);
             } else {
-               return new ResponseEntity<>("Note not exists", HttpStatus.NOT_FOUND);
+                logger.warn("Note with ID {} does not exist.", id);
+
+                return new ResponseEntity<>("Note not exists", HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
+            logger.error("Error while updating a note: {}", e.getMessage(), e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

@@ -22,7 +22,7 @@ public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final JwtAuthenticationEntryPoint point;
-    private final PasswordEncoder passwordEncoder; // Wstrzyknięcie PasswordEncoder
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public SecurityConfig(UserDetailsService userDetailsService, JwtAuthenticationFilter jwtAuthFilter, JwtAuthenticationEntryPoint point, PasswordEncoder passwordEncoder) {
