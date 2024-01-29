@@ -4,15 +4,16 @@ import com.example.notepadApp.entities.Note;
 import com.example.notepadApp.repository.NoteRepository;
 import com.example.notepadApp.service.NoteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class NoteServiceImpl implements NoteService {
     NoteRepository noteRepository;
+
     @Autowired
     public NoteServiceImpl(NoteRepository noteRepository) {
         this.noteRepository = noteRepository;
@@ -30,33 +31,31 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public Optional<Note> getNoteById(Integer id) {
-        return noteRepository.findById(id);
+    public Note getNoteById(Integer id) {
+        return noteRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Not found note"));
     }
 
     @Override
     public void deleteAllNotes() {
+        List<Note> notes = getAllNotes();
+        if (notes.isEmpty()) {
+            throw new ResourceNotFoundException("List is empty");
+        }
         noteRepository.deleteAll();
     }
 
     @Override
     public void deleteById(Integer id) {
-        noteRepository.deleteById(id);
+        Note note = noteRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Note not found"));
+        noteRepository.delete(note);
     }
 
     @Override
-    public Note updateNote(Note note) {
-        return noteRepository.save(note);
-    }
-
-    @Override
-    public boolean existsNoteByTitle(String title) {
-        return noteRepository.existsByTitle(title);
-    }
-
-    @Override
-    public boolean existsNoteById(Integer id) {
-        return noteRepository.existsById(id);
+    public Note updateNote(Integer id, Note note) {
+        Note presentNote = getNoteById(id);
+        presentNote.setTitle(note.getTitle());
+        presentNote.setText(note.getText());
+        return noteRepository.save(presentNote);
     }
 
 }

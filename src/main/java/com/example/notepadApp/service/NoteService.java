@@ -4,7 +4,6 @@ import com.example.notepadApp.entities.Note;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public interface NoteService {
@@ -12,15 +11,12 @@ public interface NoteService {
 
     List<Note> getAllNotes();
 
-    Optional<Note> getNoteById(Integer id);
+    Note getNoteById(Integer id);
 
     void deleteAllNotes();
 
     void deleteById(Integer id);
 
-    Note updateNote(Note note);
+    Note updateNote(Integer id, Note note);
 
-    boolean existsNoteByTitle(String title);
-
-    boolean existsNoteById(Integer id);
 }
