@@ -39,6 +39,7 @@ public class NoteRepositoryTest {
         List<Note> notes = noteRepository.findAll();
         Assertions.assertFalse(notes.isEmpty());
     }
+
     @Test
     public void shouldFindNoteByIdTest() {
 
@@ -55,6 +56,7 @@ public class NoteRepositoryTest {
         Assertions.assertEquals(foundNoteId, note.getId());
 
     }
+
     @Test
     public void shouldDeleteAllNotesTest() {
 
@@ -72,6 +74,7 @@ public class NoteRepositoryTest {
         Assertions.assertTrue(notes.isEmpty());
 
     }
+
     @Test
     public void shouldDeleteNoteByIdTest() {
 

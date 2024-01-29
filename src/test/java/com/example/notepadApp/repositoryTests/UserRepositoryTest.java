@@ -37,6 +37,7 @@ public class UserRepositoryTest {
         List<User> users = userRepository.findAll();
         Assertions.assertFalse(users.isEmpty());
     }
+
     @Test
     public void shouldFindUserByEmailTest() {
         //Given
@@ -51,6 +52,7 @@ public class UserRepositoryTest {
         String foundEmail = foundUser.get().getEmail();
         Assertions.assertEquals(foundEmail, user.getEmail());
     }
+
     @Test
     public void shouldFindAllUsers() {
         //Given
@@ -65,6 +67,7 @@ public class UserRepositoryTest {
         List<User> users = userRepository.findAll();
         Assertions.assertEquals(users.size(), 2);
     }
+
     @Test
     public void shouldCheckExistsUserByEmailTest() {
         //Given

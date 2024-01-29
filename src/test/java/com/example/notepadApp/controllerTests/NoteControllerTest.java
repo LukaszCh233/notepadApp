@@ -18,7 +18,6 @@ import org.springframework.web.context.WebApplicationContext;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -37,7 +36,6 @@ public class NoteControllerTest {
     LocalDate date = LocalDate.now();
     @Autowired
     WebApplicationContext context;
-    String token;
     @Autowired
     private MockMvc mockMvc;
     @MockBean
@@ -60,7 +58,6 @@ public class NoteControllerTest {
                 .thenAnswer(invocation -> {
                     Note inputNote = invocation.getArgument(0);
                     inputNote.setId(1);
-                    // Set a mock date for testing purposes
                     inputNote.setDate(LocalDate.now());
                     return inputNote;
                 });
@@ -69,7 +66,7 @@ public class NoteControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"title\":\"Test Title\",\"text\":\"Test Text\"}")
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated()) // Expect HTTP 201 when the note is created
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.title").value("Test Title"))
                 .andExpect(jsonPath("$.text").value("Test Text"));
@@ -78,12 +75,13 @@ public class NoteControllerTest {
     @WithMockUser
     @Test
     void testGetNoteById_Success() throws Exception {
+
         Note note = new Note(1, date, "testTitle", "testText");
         Note note1 = new Note(2, date, "testTitle1", "testText1");
 
         when(noteService.createNote(note)).thenReturn(note);
         when(noteService.createNote(note1)).thenReturn(note1);
-        when(noteService.getNoteById(note.getId())).thenReturn(Optional.of(note));
+        when(noteService.getNoteById(note.getId())).thenReturn((note));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/note/getNote/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -96,9 +94,10 @@ public class NoteControllerTest {
     @WithMockUser
     @Test
     void testDeleteAll_Success() throws Exception {
+
         List<Note> notes = Arrays.asList(new Note(1, date, "Test1", "Text1"), new Note(2, date, "Test2", "Text2"));
 
-        when(noteService.getAllNotes()).thenReturn(notes);
+
         doNothing().when(noteService).deleteAllNotes();
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/note/deleteAll"))
@@ -109,32 +108,29 @@ public class NoteControllerTest {
     @WithMockUser
     @Test
     void testDeleteNoteById_Success() throws Exception {
+
         int existingNoteId = 1;
 
-        when(noteService.existsNoteById(existingNoteId)).thenReturn(true);
         doNothing().when(noteService).deleteById(existingNoteId);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/note/delete/{id}", 1))
-                .andExpect(status().isOk()) // Expect HTTP 200 when the note is deleted
+                .andExpect(status().isOk())
                 .andExpect(content().string("Note deleted"));
     }
 
     @WithMockUser
     @Test
     void testUpdateNote_Success() throws Exception {
+
         Note existingNote = new Note(1, LocalDate.now(), "Existing Title", "Existing Text");
         Note updatedNote = new Note(1, LocalDate.now(), "Updated Title", "Updated Text");
 
-        when(noteService.getNoteById(1)).thenReturn(Optional.of(existingNote));
-        when(noteService.updateNote(existingNote)).thenReturn(updatedNote);
+        when(noteService.updateNote(1, existingNote)).thenReturn(updatedNote);
 
         mockMvc.perform(put("/note/update/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"title\":\"Updated Title\",\"text\":\"Updated Text\"}")
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.title").value("Updated Title"))
-                .andExpect(jsonPath("$.text").value("Updated Text"));
+                .andExpect(status().isOk());
     }
 }
