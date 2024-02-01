@@ -3,8 +3,8 @@ package com.example.notepadApp.service.serviceImpl;
 import com.example.notepadApp.entities.Note;
 import com.example.notepadApp.repository.NoteRepository;
 import com.example.notepadApp.service.NoteService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -32,21 +32,21 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public Note getNoteById(Integer id) {
-        return noteRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Not found note"));
+        return noteRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Not found note"));
     }
 
     @Override
     public void deleteAllNotes() {
         List<Note> notes = getAllNotes();
         if (notes.isEmpty()) {
-            throw new ResourceNotFoundException("List is empty");
+            throw new EntityNotFoundException("List is empty");
         }
         noteRepository.deleteAll();
     }
 
     @Override
     public void deleteById(Integer id) {
-        Note note = noteRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Note not found"));
+        Note note = noteRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Note not found"));
         noteRepository.delete(note);
     }
 
@@ -57,5 +57,4 @@ public class NoteServiceImpl implements NoteService {
         presentNote.setText(note.getText());
         return noteRepository.save(presentNote);
     }
-
 }

@@ -18,13 +18,13 @@ import java.time.LocalDate;
 public class Note {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id" ,nullable = false, unique = true)
+    @Column(name = "id", nullable = false, unique = true)
     private Integer id;
-    @Column (name="date")
+    @Column(name = "date")
     private LocalDate date;
-    @Column (name="title")
+    @Column(name = "title")
     private String title;
-    @Column (name="text")
+    @Column(name = "text")
     private String text;
 
 }
