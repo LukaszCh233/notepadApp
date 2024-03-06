@@ -29,8 +29,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-
-
 public class NoteControllerTest {
 
     LocalDate date = LocalDate.now();
@@ -52,35 +50,25 @@ public class NoteControllerTest {
     @WithMockUser
     @Test
     void testAddNote_Success() throws Exception {
+        Note note = new Note(1, LocalDate.now(), "testTitle", "testText");
 
-
-        when(noteService.createNote(any(Note.class)))
-                .thenAnswer(invocation -> {
-                    Note inputNote = invocation.getArgument(0);
-                    inputNote.setId(1);
-                    inputNote.setDate(LocalDate.now());
-                    return inputNote;
-                });
+        when(noteService.createNote(any())).thenReturn(note);
 
         mockMvc.perform(post("/note/addNote")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"title\":\"Test Title\",\"text\":\"Test Text\"}")
+                        .content("{\"title\":\"testTitle\",\"text\":\"testText\"}")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.title").value("Test Title"))
-                .andExpect(jsonPath("$.text").value("Test Text"));
+                .andExpect(jsonPath("$.title").value("testTitle"))
+                .andExpect(jsonPath("$.text").value("testText"));
     }
 
     @WithMockUser
     @Test
     void testGetNoteById_Success() throws Exception {
-
         Note note = new Note(1, date, "testTitle", "testText");
-        Note note1 = new Note(2, date, "testTitle1", "testText1");
 
-        when(noteService.createNote(note)).thenReturn(note);
-        when(noteService.createNote(note1)).thenReturn(note1);
         when(noteService.getNoteById(note.getId())).thenReturn((note));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/note/getNote/{id}", 1)
@@ -94,9 +82,7 @@ public class NoteControllerTest {
     @WithMockUser
     @Test
     void testDeleteAll_Success() throws Exception {
-
         List<Note> notes = Arrays.asList(new Note(1, date, "Test1", "Text1"), new Note(2, date, "Test2", "Text2"));
-
 
         doNothing().when(noteService).deleteAllNotes();
 
@@ -108,7 +94,6 @@ public class NoteControllerTest {
     @WithMockUser
     @Test
     void testDeleteNoteById_Success() throws Exception {
-
         int existingNoteId = 1;
 
         doNothing().when(noteService).deleteById(existingNoteId);
@@ -121,7 +106,6 @@ public class NoteControllerTest {
     @WithMockUser
     @Test
     void testUpdateNote_Success() throws Exception {
-
         Note existingNote = new Note(1, LocalDate.now(), "Existing Title", "Existing Text");
         Note updatedNote = new Note(1, LocalDate.now(), "Updated Title", "Updated Text");
 

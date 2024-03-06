@@ -30,8 +30,9 @@ public class NoteController {
 
     @GetMapping("/getNote/{id}")
     public ResponseEntity<Note> displayNote(@PathVariable Integer id) {
+
         Note note = noteService.getNoteById(id);
-        logger.info("note exists");
+        logger.info("Note exists");
         return ResponseEntity.ok(note);
     }
 

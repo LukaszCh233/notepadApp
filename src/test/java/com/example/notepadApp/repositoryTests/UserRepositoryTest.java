@@ -26,58 +26,62 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void shouldSaveUserTest() {
+    public void shouldSaveUser_Test() {
         //Given
         User user = new User(3, "test", "test@@@", "testPassword", Role.USER);
 
-        //when
         userRepository.save(user);
 
-        //Then
+        //when
         List<User> users = userRepository.findAll();
+
+        //Then
         Assertions.assertFalse(users.isEmpty());
     }
 
     @Test
-    public void shouldFindUserByEmailTest() {
+    public void shouldFindUserByEmail_Test() {
         //Given
         User user = new User(1, "test", "test@", "testPassword", Role.USER);
 
-        //When
         userRepository.save(user);
 
-        //Then
+        //When
         Optional<User> foundUser = userRepository.findByEmail(user.getEmail());
+
+        //Then
         Assertions.assertTrue(foundUser.isPresent());
         String foundEmail = foundUser.get().getEmail();
         Assertions.assertEquals(foundEmail, user.getEmail());
     }
 
     @Test
-    public void shouldFindAllUsers() {
+    public void shouldFindAllUsers_Test() {
         //Given
         User user = new User(1, "test", "test@", "testPassword", Role.USER);
         User user1 = new User(2, "test1", "test@1", "testPassword1", Role.USER);
 
-        //When
         userRepository.save(user);
         userRepository.save(user1);
 
-        //Then
+        //When
         List<User> users = userRepository.findAll();
+
+        //Then
         Assertions.assertEquals(users.size(), 2);
     }
 
     @Test
-    public void shouldCheckExistsUserByEmailTest() {
+    public void shouldCheckExistsUserByEmail_Test() {
         //Given
         User user = new User(1, "test", "test@", "testPassword", Role.USER);
-        //When
+
         userRepository.save(user);
-        //Then
+
+        //When
         boolean check = userRepository.existsByEmail(user.getEmail());
 
+        //Then
         Assertions.assertTrue(check, "User exists");
-
     }
 }

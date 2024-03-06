@@ -48,7 +48,6 @@ public class UserControllerTest {
 
     @Test
     void testRegisterUser_Success() throws Exception {
-
         User user = new User();
         user.setId(1);
         user.setName("testName");
@@ -59,7 +58,6 @@ public class UserControllerTest {
         when(userService.findUserByEmail(user.getEmail())).thenReturn(Optional.empty());
         when(userService.createUser(user)).thenReturn(user);
         when(userService.mapUserToUserDTO(user)).thenCallRealMethod();
-
 
         mockMvc.perform(MockMvcRequestBuilders.post("/user/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -73,7 +71,6 @@ public class UserControllerTest {
 
     @Test
     void testLoginUser_Success() throws Exception {
-
         User user = new User();
         user.setEmail("testEmail");
         user.setPassword("testPassword");
@@ -93,7 +90,5 @@ public class UserControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string("jwtToken"));
-
     }
-
 }

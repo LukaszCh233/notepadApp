@@ -28,7 +28,6 @@ public class NoteRepositoryTest {
 
     @Test
     public void shouldSaveNoteTest() {
-
         //Given
         Note note = new Note(null, date, "TitleTest", "TextTest");
 
@@ -41,53 +40,50 @@ public class NoteRepositoryTest {
     }
 
     @Test
-    public void shouldFindNoteByIdTest() {
-
+    public void shouldFindNoteById_Test() {
         //Given
         Note note = new Note(1, date, "TitleTest", "TextTest");
 
-        //When
         noteRepository.save(note);
 
-        //Then
+        //When
         Optional<Note> foundNoteOptional = noteRepository.findById(note.getId());
+
+        //Then
         Assertions.assertTrue(foundNoteOptional.isPresent());
         Integer foundNoteId = foundNoteOptional.get().getId();
         Assertions.assertEquals(foundNoteId, note.getId());
-
     }
 
     @Test
-    public void shouldDeleteAllNotesTest() {
-
+    public void shouldDeleteAllNotes_Test() {
         //Given
         Note note = new Note(1, date, "TitleTest", "TextTest");
         Note note1 = new Note(2, date, "TitleTest1", "TextTest1");
 
-        //When
         noteRepository.save(note);
         noteRepository.save(note1);
 
-        //Then
+        //When
         noteRepository.deleteAll();
+
+        //Then
         List<Note> notes = noteRepository.findAll();
         Assertions.assertTrue(notes.isEmpty());
-
     }
 
     @Test
-    public void shouldDeleteNoteByIdTest() {
-
+    public void shouldDeleteNoteById_Test() {
         //Given
         Note note = new Note(3, date, "TitleTest", "TextTest");
 
-        //When
         noteRepository.save(note);
 
-        //Then
+        //When
         noteRepository.deleteById(note.getId());
+
+        //Then
         Optional<Note> deletedNote = noteRepository.findById(note.getId());
         Assertions.assertFalse(deletedNote.isPresent());
-
     }
 }

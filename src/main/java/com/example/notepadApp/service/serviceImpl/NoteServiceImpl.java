@@ -12,7 +12,7 @@ import java.util.List;
 
 @Service
 public class NoteServiceImpl implements NoteService {
-    NoteRepository noteRepository;
+    private final NoteRepository noteRepository;
 
     @Autowired
     public NoteServiceImpl(NoteRepository noteRepository) {
@@ -27,7 +27,11 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public List<Note> getAllNotes() {
-        return noteRepository.findAll();
+        List<Note> notes = noteRepository.findAll();
+        if (notes.isEmpty()) {
+            throw new EntityNotFoundException("List is empty");
+        }
+        return notes;
     }
 
     @Override
@@ -37,10 +41,7 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public void deleteAllNotes() {
-        List<Note> notes = getAllNotes();
-        if (notes.isEmpty()) {
-            throw new EntityNotFoundException("List is empty");
-        }
+        getAllNotes();
         noteRepository.deleteAll();
     }
 
